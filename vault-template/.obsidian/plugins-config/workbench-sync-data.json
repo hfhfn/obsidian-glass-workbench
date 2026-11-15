@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "debounceMs": 8000,
+  "minIntervalMs": 300000,
+  "pythonPath": "python",
+  "notify": true,
+  "runWhenClosedChanges": true,
+  "lastSyncAt": 0,
+  "pendingSync": false
+}

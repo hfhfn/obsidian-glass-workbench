@@ -13,7 +13,7 @@ os.chdir(ROOT)
 OUT = "00_系统/知识库导航页.md"
 G = ["git", "-c", "core.quotepath=false"]
 
-files = subprocess.run(G + ["ls-files", "*.md"], capture_output=True, text=True, encoding="utf-8").stdout.splitlines()
+files = subprocess.run(G + ["ls-files", "--cached", "--others", "--exclude-standard", "*.md"], capture_output=True, text=True, encoding="utf-8").stdout.splitlines()
 out = subprocess.run(G + ["log", "--diff-filter=A", "--reverse", "--format=@@%ad", "--date=short",
                           "--name-only", "--no-renames"], capture_output=True, text=True, encoding="utf-8").stdout
 add, cur = {}, None
@@ -26,6 +26,13 @@ for line in out.splitlines():
 EXCLUDE_TOP = {"00_系统", "00_Inbox", "template", ".claude", "private"}
 EXCLUDE_BASE = {"README", "CLAUDE"}
 
+def fallback_date(p):
+    try:
+        return datetime.date.fromtimestamp(os.path.getctime(p))
+    except Exception:
+        return datetime.date.today()
+
+
 def base(p): return os.path.splitext(os.path.basename(p))[0]
 def dt(s): return datetime.date(*map(int, s.split("-")))
 
@@ -35,6 +42,7 @@ for f in files:
     if top in EXCLUDE_TOP or base(f) in EXCLUDE_BASE: continue
     if base(f).endswith("-MOC") or base(f) == "MOC": continue
     if f in add: notes.append((dt(add[f]), f))
+    else: notes.append((fallback_date(f), f))
 
 TODAY = datetime.date.today()
 def month_start(d, minus=0):

@@ -9,6 +9,7 @@
 - ⚡ **交互工作台**：DataviewJS 实时指标卡 + 主题筛选 + 标题搜索 + 点击打开笔记 + CSS 极光
 - 🌊 **玻璃展厅**：fluidglass-ui 的 WebGL 流体卡片，浏览器打开可点击跳回 Obsidian
 - 🧭 **收录时间线**：基于 git 首次入库日期的导航页生成脚本
+- 🔄 **自动同步**：Workbench Sync 本地插件在笔记实质变化后重新生成导航页 / 展厅，并刷新 Dataview（Inbox 变化不触发）
 
 ## 截图
 
@@ -31,9 +32,13 @@
 │   │   ├── 配色方案.md
 │   │   ├── 知识库导航页.md          # 占位，运行脚本生成
 │   │   ├── 工作台-玻璃展厅.html
-│   │   └── 脚本/生成知识库导航页.py
+│   │   ├── 模板/玻璃展厅模板.html
+│   │   └── 脚本/
+│   │       ├── 生成知识库导航页.py
+│   │       └── 生成玻璃展厅.py
 │   └── .obsidian/
 │       ├── snippets/glass-workbench.css
+│       ├── plugins/workbench-sync/  # 自动同步插件
 │       └── plugins-config/          # 依赖插件配置参考
 ├── docs/
 │   ├── 安装说明.md
@@ -52,11 +57,14 @@
 1. 安装 Obsidian **1.15+**，主题建议 **Blue Topaz**（可选）。
 2. 安装社区插件：Dataview、Homepage、Tasks、Style Settings、Keep the Rhythm、HTML Reader。
 3. 把 `vault-template/00_系统/` 复制到你的 vault 根目录。
-4. 把 `vault-template/.obsidian/snippets/glass-workbench.css` 复制到你的 `.obsidian/snippets/`，在 **设置 → 外观 → CSS 代码片段** 中启用。
-5. 设置 → Dataview → 打开 **Enable JavaScript queries**。
-6. 设置 → Homepage → 主页设为 `00_系统/工作台`，打开 **Open on startup**。
-7. 根目录运行 `python "00_系统/脚本/生成知识库导航页.py"` 生成时间线。
-8. 按 [docs/适配指南.md](docs/适配指南.md) 把链接、MOC 名称、`YOUR_VAULT_ID` 换成你自己的。
+4. 把 `vault-template/.obsidian/snippets/glass-workbench.css` 复制到你的 `.obsidian/snippets/`。
+5. 把 `vault-template/.obsidian/plugins/workbench-sync/` 复制到你的 `.obsidian/plugins/workbench-sync/`。
+6. 重启 Obsidian，在 **设置 → 外观 → CSS 代码片段** 中启用 `glass-workbench`，在第三方插件中启用 **Workbench Sync**。
+7. 设置 → Dataview → 打开 **Enable JavaScript queries**。
+8. 设置 → Homepage → 主页设为 `00_系统/工作台`，打开 **Open on startup**。
+9. 设置 → Workbench Sync → 填写 Python 路径（默认 `python`）。
+10. 根目录运行 `python "00_系统/脚本/生成知识库导航页.py"` 和 `python "00_系统/脚本/生成玻璃展厅.py"` 生成初版。
+11. 按 [docs/适配指南.md](docs/适配指南.md) 把链接、MOC 名称、`YOUR_VAULT_ID` 换成你自己的。
 
 ## 配置
 
@@ -86,6 +94,7 @@
 | Style Settings | 1.0.9+ |
 | Keep the Rhythm | 0.2.8+ |
 | HTML Reader | 1.0.13+（可选，用于打开展厅） |
+| Workbench Sync | 1.1.0（本地插件，需 Python 3） |
 
 ## 已知限制
 
@@ -93,6 +102,9 @@
 - `交互工作台` 依赖 DataviewJS；未开启时只会显示错误提示。
 - 模板中的 wikilink / MOC 路径按示例知识库编写，需要按 [docs/适配指南.md](docs/适配指南.md) 调整。
 - 展厅 HTML 中的 `YOUR_VAULT_ID` 必须替换为你的 vault ID（在 `%APPDATA%\obsidian\obsidian.json` 中查看）。
+- **Workbench Sync 仅桌面端**，通过 `child_process` 调用 Python；需在插件设置里填写正确的 Python 路径。
+- 自动同步默认**最低间隔 5 分钟**，手动「立即同步」不受限制；Inbox 的变化不触发，整理进主题目录才算。
+- 未提交的新笔记会先用文件创建时间进入导航页/展厅，git 提交后切换为首次入库时间。
 
 ## 许可与致谢
 

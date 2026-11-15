@@ -1,0 +1,9 @@
+{
+  "id": "workbench-sync",
+  "name": "Workbench Sync",
+  "version": "1.1.0",
+  "minAppVersion": "1.4.0",
+  "description": "在笔记实质变化后自动重新生成知识库导航页与玻璃展厅，并刷新工作台的 Dataview。",
+  "author": "hfhfn",
+  "isDesktopOnly": true
+}
