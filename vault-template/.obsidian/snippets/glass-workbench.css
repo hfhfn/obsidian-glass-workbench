@@ -1,0 +1,1358 @@
+/* @settings
+name: Prism Glass 工作台
+id: prism-glass
+settings:
+    -
+        id: pg-palette
+        title: 配色方案
+        description: 18 套深色玻璃调色板（含 4 套炫彩），切换后整页氛围联动（背景光晕、玻璃、强调色、表格、高亮）
+        type: class-select
+        allowEmpty: false
+        default: pg-us00
+        options:
+            -
+                label: US-00 青绿深色
+                value: pg-us00
+            -
+                label: US-11 蓝金交织
+                value: pg-us11
+            -
+                label: US-08 深蓝紫
+                value: pg-us08
+            -
+                label: US-05 青紫渐变
+                value: pg-us05
+            -
+                label: US-02 紫金暖调
+                value: pg-us02
+            -
+                label: US-13 冰蓝
+                value: pg-us13
+            -
+                label: US-15 森林绿
+                value: pg-us15
+            -
+                label: US-12 湖蓝晨光
+                value: pg-us12
+            -
+                label: US-16 墨蓝琥珀 · Midnight Amber
+                value: pg-us16
+            -
+                label: US-17 石墨电蓝 · Graphite Electric
+                value: pg-us17
+            -
+                label: US-18 东京夜 · Tokyo Night
+                value: pg-us18
+            -
+                label: US-19 雾青莫兰迪 · Morandi Mist
+                value: pg-us19
+            -
+                label: US-20 紫檀玫金 · Aubergine Rose
+                value: pg-us20
+            -
+                label: US-21 岩灰赤陶 · Slate Terracotta
+                value: pg-us21
+            -
+                label: US-22 霓虹青紫 · Cyber Neon
+                value: pg-us22
+            -
+                label: US-23 落日烈焰 · Sunset Blaze
+                value: pg-us23
+            -
+                label: US-24 糖果电波 · Candy Wave
+                value: pg-us24
+            -
+                label: US-25 极光蓝绿 · Aurora
+                value: pg-us25
+    -
+        id: pg-vivid
+        title: 炫彩渐变
+        description: 在玻璃工作台/交互工作台上叠加多色流光、渐变数字与渐变边框；炫彩配色（US-22～25）效果最明显
+        type: class-toggle
+        default: false
+    -
+        id: pg-no-color
+        title: 关闭配色（跟随主题）
+        description: 开启后不再注入 Prism Glass 调色板，界面颜色回归 Blue Topaz 主题；玻璃、圆角、双栏布局保留
+        type: class-toggle
+        default: false
+    -
+        id: pg-blur
+        title: 玻璃模糊强度
+        description: 数值越高玻璃越“厚”，低配设备建议 8–12px
+        type: variable-number-slider
+        default: 20
+        min: 0
+        max: 40
+        step: 2
+        format: px
+    -
+        id: pg-radius
+        title: 卡片圆角
+        type: variable-number-slider
+        default: 26
+        min: 10
+        max: 34
+        step: 2
+        format: px
+    -
+        id: pg-2col
+        title: 双栏工作台
+        description: 阅读视图下把工作台的卡片排成两栏（编辑视图仍为单栏）
+        type: class-toggle
+        default: false
+    -
+        id: pg-no-ambient
+        title: 关闭背景光晕
+        description: 性能模式：去掉固定背景的环境光渐变
+        type: class-toggle
+        default: false
+    -
+        id: pg-solid
+        title: 关闭玻璃模糊（省电）
+        description: 移动端或低配设备建议开启
+        type: class-toggle
+        default: false
+*/
+
+/* ==========================================================================
+   Prism Glass 工作台 · Obsidian CSS snippet
+   设计语言源自 prism-glass (Apache-2.0) — https://github.com/csuyincs-creator/prism-glass
+   调色板原始色：C1 锚点 · C2 主色 · C3 强调 · C4 柔和 · C5 高光
+   本文件只做 Obsidian 适配，不改动原设计的材质分层逻辑。
+   ========================================================================== */
+
+/* ------------------------------------------------------------ 基础尺寸 */
+body {
+  --pg-radius-panel: 22px;
+  --pg-radius-control: 12px;
+  --pg-radius-card: var(--pg-radius, 26px);
+  --pg-blur-size: var(--pg-blur, 20px);
+  --pg-gap: 14px;
+}
+
+/* ------------------------------------------------------------ 调色板 */
+body,
+body.pg-us00 {
+  --pg-gradient: linear-gradient(120deg, var(--pg-accent), var(--pg-c4));
+  --pg-c1: #02100D;
+  --pg-c2: #0B3A30;
+  --pg-c3: #10DF9A;
+  --pg-c4: #66CDB1;
+  --pg-c5: #C8F5E8;
+
+  --pg-canvas: #04120F;
+  --pg-surface: rgba(10, 34, 29, 0.58);
+  --pg-surface-strong: rgba(6, 22, 18, 0.86);
+  --pg-surface-soft: rgba(16, 223, 154, 0.06);
+  --pg-border: rgba(102, 205, 177, 0.16);
+  --pg-border-strong: rgba(16, 223, 154, 0.34);
+  --pg-highlight: rgba(200, 245, 232, 0.20);
+  --pg-text: #E6F5F0;
+  --pg-text-muted: #9FBFB6;
+  --pg-text-faint: #6E8C84;
+  --pg-accent: #10DF9A;
+  --pg-accent-hover: #3BEBAF;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.28);
+}
+
+body.pg-us11 {
+  --pg-c1: #0A1335;
+  --pg-c2: #163B7A;
+  --pg-c3: #4B70BE;
+  --pg-c4: #C89A55;
+  --pg-c5: #F2D79E;
+
+  --pg-canvas: #060C22;
+  --pg-surface: rgba(15, 35, 72, 0.62);
+  --pg-surface-strong: rgba(6, 11, 30, 0.88);
+  --pg-surface-soft: rgba(75, 112, 190, 0.08);
+  --pg-border: rgba(200, 154, 85, 0.20);
+  --pg-border-strong: rgba(242, 215, 158, 0.38);
+  --pg-highlight: rgba(242, 215, 158, 0.22);
+  --pg-text: #EAF0FF;
+  --pg-text-muted: #A9B8D6;
+  --pg-text-faint: #7C8BA8;
+  --pg-accent: #C89A55;
+  --pg-accent-hover: #F2D79E;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.50);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.30);
+}
+
+body.pg-us08 {
+  --pg-c1: #0E1A3E;
+  --pg-c2: #2E3E6E;
+  --pg-c3: #5E4E8E;
+  --pg-c4: #9E7BBE;
+  --pg-c5: #D0A8E0;
+
+  --pg-canvas: #080F26;
+  --pg-surface: rgba(24, 32, 58, 0.60);
+  --pg-surface-strong: rgba(7, 12, 30, 0.87);
+  --pg-surface-soft: rgba(94, 78, 142, 0.08);
+  --pg-border: rgba(158, 123, 190, 0.18);
+  --pg-border-strong: rgba(208, 168, 224, 0.34);
+  --pg-highlight: rgba(208, 168, 224, 0.20);
+  --pg-text: #EDE6F5;
+  --pg-text-muted: #B6A6C9;
+  --pg-text-faint: #867A99;
+  --pg-accent: #9E7BBE;
+  --pg-accent-hover: #D0A8E0;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.48);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.28);
+}
+
+body.pg-us05 {
+  --pg-c1: #1A3A3A;
+  --pg-c2: #2E6E6E;
+  --pg-c3: #5A8E9E;
+  --pg-c4: #8E6E9E;
+  --pg-c5: #B888C4;
+
+  --pg-canvas: #0D1F1F;
+  --pg-surface: rgba(24, 58, 58, 0.58);
+  --pg-surface-strong: rgba(9, 25, 25, 0.87);
+  --pg-surface-soft: rgba(90, 142, 158, 0.08);
+  --pg-border: rgba(142, 110, 158, 0.20);
+  --pg-border-strong: rgba(184, 136, 196, 0.34);
+  --pg-highlight: rgba(184, 136, 196, 0.20);
+  --pg-text: #E8F2F2;
+  --pg-text-muted: #A6C2C2;
+  --pg-text-faint: #7A9797;
+  --pg-accent: #5A8E9E;
+  --pg-accent-hover: #B888C4;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.46);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.26);
+}
+
+body.pg-us02 {
+  --pg-c1: #3E2564;
+  --pg-c2: #7B5E8E;
+  --pg-c3: #B898A0;
+  --pg-c4: #D4B896;
+  --pg-c5: #E5C87B;
+
+  --pg-canvas: #1A0F2B;
+  --pg-surface: rgba(50, 32, 74, 0.58);
+  --pg-surface-strong: rgba(22, 13, 34, 0.88);
+  --pg-surface-soft: rgba(184, 152, 160, 0.08);
+  --pg-border: rgba(212, 184, 150, 0.18);
+  --pg-border-strong: rgba(229, 200, 123, 0.34);
+  --pg-highlight: rgba(229, 200, 123, 0.22);
+  --pg-text: #F4ECE2;
+  --pg-text-muted: #C7B6A8;
+  --pg-text-faint: #99897C;
+  --pg-accent: #D4B896;
+  --pg-accent-hover: #E5C87B;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.50);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.30);
+}
+
+body.pg-us13 {
+  --pg-c1: #2A3E4E;
+  --pg-c2: #4A6E8E;
+  --pg-c3: #8EAEC8;
+  --pg-c4: #C8DCE8;
+  --pg-c5: #EEF4F8;
+
+  --pg-canvas: #101C26;
+  --pg-surface: rgba(32, 52, 68, 0.58);
+  --pg-surface-strong: rgba(12, 24, 34, 0.88);
+  --pg-surface-soft: rgba(142, 174, 200, 0.08);
+  --pg-border: rgba(200, 220, 232, 0.18);
+  --pg-border-strong: rgba(238, 244, 248, 0.30);
+  --pg-highlight: rgba(238, 244, 248, 0.28);
+  --pg-text: #EEF6FA;
+  --pg-text-muted: #B4C8D6;
+  --pg-text-faint: #8298A8;
+  --pg-accent: #8EAEC8;
+  --pg-accent-hover: #C8DCE8;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.26);
+}
+
+body.pg-us15 {
+  --pg-c1: #1E2E22;
+  --pg-c2: #2E4536;
+  --pg-c3: #4A6B52;
+  --pg-c4: #8AA890;
+  --pg-c5: #D8E8DC;
+
+  --pg-canvas: #0C1610;
+  --pg-surface: rgba(24, 38, 29, 0.58);
+  --pg-surface-strong: rgba(9, 18, 12, 0.88);
+  --pg-surface-soft: rgba(74, 107, 82, 0.08);
+  --pg-border: rgba(138, 168, 144, 0.18);
+  --pg-border-strong: rgba(216, 232, 220, 0.30);
+  --pg-highlight: rgba(216, 232, 220, 0.22);
+  --pg-text: #E9F2EC;
+  --pg-text-muted: #A8BFAF;
+  --pg-text-faint: #7E9485;
+  --pg-accent: #8AA890;
+  --pg-accent-hover: #D8E8DC;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.46);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.26);
+}
+
+body.pg-us12 {
+  --pg-c1: #1E3E4A;
+  --pg-c2: #3A6E7E;
+  --pg-c3: #6EA0AE;
+  --pg-c4: #A8D0D8;
+  --pg-c5: #E2EEF0;
+
+  --pg-canvas: #0D2026;
+  --pg-surface: rgba(28, 52, 60, 0.58);
+  --pg-surface-strong: rgba(9, 22, 27, 0.88);
+  --pg-surface-soft: rgba(110, 160, 174, 0.08);
+  --pg-border: rgba(168, 208, 216, 0.18);
+  --pg-border-strong: rgba(226, 238, 240, 0.30);
+  --pg-highlight: rgba(226, 238, 240, 0.22);
+  --pg-text: #E9F4F6;
+  --pg-text-muted: #A9C4CB;
+  --pg-text-faint: #7E989F;
+  --pg-accent: #6EA0AE;
+  --pg-accent-hover: #A8D0D8;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.26);
+}
+
+body.pg-us16 {
+  --pg-c1: #070B18;
+  --pg-c2: #111A33;
+  --pg-c3: #F2B24C;
+  --pg-c4: #8FA6C9;
+  --pg-c5: #FFE6B0;
+
+  --pg-canvas: #050912;
+  --pg-surface: rgba(17, 26, 51, 0.62);
+  --pg-surface-strong: rgba(7, 11, 24, 0.88);
+  --pg-surface-soft: rgba(242, 178, 76, 0.08);
+  --pg-border: rgba(143, 166, 201, 0.18);
+  --pg-border-strong: rgba(242, 178, 76, 0.36);
+  --pg-highlight: rgba(255, 230, 176, 0.20);
+  --pg-text: #EAF0FF;
+  --pg-text-muted: #A9B8D6;
+  --pg-text-faint: #7686A6;
+  --pg-accent: #F2B24C;
+  --pg-accent-hover: #FFD37A;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.50);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.30);
+}
+
+body.pg-us17 {
+  --pg-c1: #0A0C10;
+  --pg-c2: #14181F;
+  --pg-c3: #4C9AFF;
+  --pg-c4: #8FA8C4;
+  --pg-c5: #D6E6FF;
+
+  --pg-canvas: #080A0D;
+  --pg-surface: rgba(20, 24, 31, 0.62);
+  --pg-surface-strong: rgba(10, 12, 16, 0.88);
+  --pg-surface-soft: rgba(76, 154, 255, 0.08);
+  --pg-border: rgba(143, 168, 196, 0.16);
+  --pg-border-strong: rgba(76, 154, 255, 0.36);
+  --pg-highlight: rgba(214, 230, 255, 0.18);
+  --pg-text: #E8EEF6;
+  --pg-text-muted: #A6B4C6;
+  --pg-text-faint: #74839A;
+  --pg-accent: #6FB0FF;
+  --pg-accent-hover: #A8CCFF;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.50);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.30);
+}
+
+body.pg-us18 {
+  --pg-c1: #16161E;
+  --pg-c2: #1F2335;
+  --pg-c3: #7AA2F7;
+  --pg-c4: #BB9AF7;
+  --pg-c5: #C0CAF5;
+
+  --pg-canvas: #12121A;
+  --pg-surface: rgba(31, 35, 53, 0.62);
+  --pg-surface-strong: rgba(22, 22, 30, 0.88);
+  --pg-surface-soft: rgba(122, 162, 247, 0.08);
+  --pg-border: rgba(187, 154, 247, 0.18);
+  --pg-border-strong: rgba(122, 162, 247, 0.36);
+  --pg-highlight: rgba(192, 202, 245, 0.18);
+  --pg-text: #C0CAF5;
+  --pg-text-muted: #A9B1D6;
+  --pg-text-faint: #8C91AB;
+  --pg-accent: #7AA2F7;
+  --pg-accent-hover: #9AB8FF;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.48);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.28);
+}
+
+body.pg-us19 {
+  --pg-c1: #10171A;
+  --pg-c2: #1B2A2E;
+  --pg-c3: #8FB8B0;
+  --pg-c4: #B9C8C4;
+  --pg-c5: #E6EFEC;
+
+  --pg-canvas: #0D1215;
+  --pg-surface: rgba(27, 42, 46, 0.62);
+  --pg-surface-strong: rgba(16, 23, 26, 0.88);
+  --pg-surface-soft: rgba(143, 184, 176, 0.08);
+  --pg-border: rgba(185, 200, 196, 0.16);
+  --pg-border-strong: rgba(143, 184, 176, 0.32);
+  --pg-highlight: rgba(230, 239, 236, 0.18);
+  --pg-text: #E6EFEC;
+  --pg-text-muted: #B2C4BF;
+  --pg-text-faint: #809691;
+  --pg-accent: #8FB8B0;
+  --pg-accent-hover: #B8D8D2;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.46);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.26);
+}
+
+body.pg-us20 {
+  --pg-c1: #150C18;
+  --pg-c2: #24152B;
+  --pg-c3: #E8A0B4;
+  --pg-c4: #A98BB8;
+  --pg-c5: #F7D4DE;
+
+  --pg-canvas: #100812;
+  --pg-surface: rgba(36, 21, 43, 0.62);
+  --pg-surface-strong: rgba(21, 12, 24, 0.88);
+  --pg-surface-soft: rgba(232, 160, 180, 0.08);
+  --pg-border: rgba(169, 139, 184, 0.18);
+  --pg-border-strong: rgba(232, 160, 180, 0.34);
+  --pg-highlight: rgba(247, 212, 222, 0.20);
+  --pg-text: #F7EAF1;
+  --pg-text-muted: #C9B2C6;
+  --pg-text-faint: #957F98;
+  --pg-accent: #E8A0B4;
+  --pg-accent-hover: #F7C2D0;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.50);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.30);
+}
+
+body.pg-us21 {
+  --pg-c1: #100E0C;
+  --pg-c2: #1E1A16;
+  --pg-c3: #E07856;
+  --pg-c4: #B99A85;
+  --pg-c5: #F2D3C2;
+
+  --pg-canvas: #0B0A08;
+  --pg-surface: rgba(30, 26, 22, 0.62);
+  --pg-surface-strong: rgba(16, 14, 12, 0.88);
+  --pg-surface-soft: rgba(224, 120, 86, 0.08);
+  --pg-border: rgba(185, 154, 133, 0.18);
+  --pg-border-strong: rgba(224, 120, 86, 0.34);
+  --pg-highlight: rgba(242, 211, 194, 0.20);
+  --pg-text: #F5EDE7;
+  --pg-text-muted: #C7B2A3;
+  --pg-text-faint: #937F73;
+  --pg-accent: #E07856;
+  --pg-accent-hover: #F09A7C;
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.50);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.30);
+}
+
+body.pg-us22 {
+  --pg-c1: #070914;
+  --pg-c2: #12132B;
+  --pg-c3: #00E5FF;
+  --pg-c4: #FF4FD8;
+  --pg-c5: #C6FF6B;
+  --pg-gradient: linear-gradient(120deg, #00E5FF, #FF4FD8 55%, #C6FF6B);
+
+  --pg-canvas: #05060F;
+  --pg-surface: rgba(18, 19, 43, 0.64);
+  --pg-surface-strong: rgba(7, 9, 20, 0.88);
+  --pg-surface-soft: rgba(0, 229, 255, 0.10);
+  --pg-border: rgba(255, 79, 216, 0.22);
+  --pg-border-strong: rgba(0, 229, 255, 0.42);
+  --pg-highlight: rgba(198, 255, 107, 0.22);
+  --pg-text: #EAF6FF;
+  --pg-text-muted: #A9C0D6;
+  --pg-text-faint: #7688A6;
+  --pg-accent: #00E5FF;
+  --pg-accent-hover: #6BF0FF;
+  --pg-shadow: 0 18px 44px rgba(0, 229, 255, 0.10), 0 18px 40px rgba(0, 0, 0, 0.55);
+  --pg-shadow-soft: 0 8px 24px rgba(255, 79, 216, 0.10);
+}
+
+body.pg-us23 {
+  --pg-c1: #140A12;
+  --pg-c2: #2A1226;
+  --pg-c3: #FF7A59;
+  --pg-c4: #FFB86B;
+  --pg-c5: #B388FF;
+  --pg-gradient: linear-gradient(120deg, #FF7A59, #FFB86B 45%, #B388FF);
+
+  --pg-canvas: #0F070D;
+  --pg-surface: rgba(42, 18, 38, 0.64);
+  --pg-surface-strong: rgba(20, 10, 18, 0.88);
+  --pg-surface-soft: rgba(255, 122, 89, 0.10);
+  --pg-border: rgba(255, 184, 107, 0.22);
+  --pg-border-strong: rgba(255, 122, 89, 0.40);
+  --pg-highlight: rgba(179, 136, 255, 0.24);
+  --pg-text: #FFF0EA;
+  --pg-text-muted: #D6B3B0;
+  --pg-text-faint: #9A7F86;
+  --pg-accent: #FF7A59;
+  --pg-accent-hover: #FFA07F;
+  --pg-shadow: 0 18px 44px rgba(255, 122, 89, 0.10), 0 18px 40px rgba(0, 0, 0, 0.55);
+  --pg-shadow-soft: 0 8px 24px rgba(179, 136, 255, 0.10);
+}
+
+body.pg-us24 {
+  --pg-c1: #0B0714;
+  --pg-c2: #1B1030;
+  --pg-c3: #7CFFB2;
+  --pg-c4: #FF8AD8;
+  --pg-c5: #FFE66D;
+  --pg-gradient: linear-gradient(120deg, #7CFFB2, #FF8AD8 50%, #FFE66D);
+
+  --pg-canvas: #080510;
+  --pg-surface: rgba(27, 16, 48, 0.64);
+  --pg-surface-strong: rgba(11, 7, 20, 0.88);
+  --pg-surface-soft: rgba(124, 255, 178, 0.10);
+  --pg-border: rgba(255, 138, 216, 0.22);
+  --pg-border-strong: rgba(124, 255, 178, 0.40);
+  --pg-highlight: rgba(255, 230, 109, 0.22);
+  --pg-text: #F2FFF8;
+  --pg-text-muted: #B9C9C4;
+  --pg-text-faint: #7F928C;
+  --pg-accent: #7CFFB2;
+  --pg-accent-hover: #B0FFD0;
+  --pg-shadow: 0 18px 44px rgba(124, 255, 178, 0.10), 0 18px 40px rgba(0, 0, 0, 0.55);
+  --pg-shadow-soft: 0 8px 24px rgba(255, 138, 216, 0.10);
+}
+
+body.pg-us25 {
+  --pg-c1: #061018;
+  --pg-c2: #0C2333;
+  --pg-c3: #35E0C0;
+  --pg-c4: #4FA8FF;
+  --pg-c5: #B98CFF;
+  --pg-gradient: linear-gradient(120deg, #35E0C0, #4FA8FF 50%, #B98CFF);
+
+  --pg-canvas: #040C12;
+  --pg-surface: rgba(12, 35, 51, 0.64);
+  --pg-surface-strong: rgba(6, 16, 24, 0.88);
+  --pg-surface-soft: rgba(53, 224, 192, 0.10);
+  --pg-border: rgba(79, 168, 255, 0.22);
+  --pg-border-strong: rgba(53, 224, 192, 0.40);
+  --pg-highlight: rgba(185, 140, 255, 0.22);
+  --pg-text: #E8FBFF;
+  --pg-text-muted: #A6C4D4;
+  --pg-text-faint: #718C9E;
+  --pg-accent: #35E0C0;
+  --pg-accent-hover: #7BF0DA;
+  --pg-shadow: 0 18px 44px rgba(53, 224, 192, 0.10), 0 18px 40px rgba(0, 0, 0, 0.55);
+  --pg-shadow-soft: 0 8px 24px rgba(79, 168, 255, 0.10);
+}
+
+/* ------------------------------------------- 映射到 Obsidian 语义变量 */
+/* :not(.pg-no-color) 是「关闭配色」开关：开启时本块不生效，变量回落到 Blue Topaz 主题 */
+body.theme-dark:not(.pg-no-color) {
+  --background-primary: var(--pg-surface-strong);
+  --background-primary-alt: var(--pg-surface-strong);
+  --background-secondary: var(--pg-surface);
+  --background-secondary-alt: var(--pg-surface);
+  --background-modifier-border: var(--pg-border);
+  --background-modifier-border-hover: var(--pg-border-strong);
+  --background-modifier-border-focus: var(--pg-border-strong);
+  --background-modifier-hover: var(--pg-surface-soft);
+  --background-modifier-active-hover: var(--pg-surface-soft);
+  --background-modifier-form-field: var(--pg-surface-strong);
+  --background-modifier-form-field-highlighted: var(--pg-surface-strong);
+  --text-normal: var(--pg-text);
+  --text-muted: var(--pg-text-muted);
+  --text-faint: var(--pg-text-faint);
+  --text-accent: var(--pg-accent);
+  --text-accent-hover: var(--pg-accent-hover);
+  --text-on-accent: #02100D;
+  --interactive-accent: var(--pg-accent);
+  --interactive-accent-hover: var(--pg-accent-hover);
+  --color-accent: var(--pg-accent);
+  --color-accent-1: var(--pg-accent-hover);
+  --color-accent-2: var(--pg-c4);
+  --blockquote-border-color: var(--pg-border-strong);
+  --code-background: rgba(2, 16, 13, 0.55);
+  --code-normal: var(--pg-c5);
+  --tag-background: var(--pg-surface-soft);
+  --tag-background-hover: rgba(255, 255, 255, 0.10);
+  --tag-color: var(--pg-c4);
+  --hr-color: var(--pg-border);
+  --scrollbar-thumb-bg: var(--pg-border);
+  --scrollbar-active-thumb-bg: var(--pg-border-strong);
+  --tab-text-color: var(--pg-text-muted);
+  --tab-text-color-active: var(--pg-text);
+  --titlebar-text-color: var(--pg-text-muted);
+  --callout-color: 255, 255, 255;
+}
+
+/* 浅色模式：保留轻玻璃，不强行压深色 */
+body.theme-light:not(.pg-no-color) {
+  --pg-surface: rgba(255, 255, 255, 0.66);
+  --pg-surface-strong: rgba(255, 255, 255, 0.88);
+  --pg-surface-soft: rgba(11, 58, 48, 0.05);
+  --pg-border: rgba(11, 58, 48, 0.12);
+  --pg-border-strong: rgba(11, 143, 106, 0.32);
+  --pg-highlight: rgba(255, 255, 255, 0.90);
+  --pg-text: #122B25;
+  --pg-text-muted: #4C6A62;
+  --pg-text-faint: #7C948D;
+  --pg-shadow: 0 16px 36px rgba(11, 58, 48, 0.12);
+  --pg-shadow-soft: 0 6px 18px rgba(11, 58, 48, 0.08);
+  --background-modifier-border: var(--pg-border);
+  --background-modifier-hover: rgba(11, 143, 106, 0.08);
+  --text-accent: var(--pg-accent);
+  --color-accent: var(--pg-accent);
+  --interactive-accent: var(--pg-accent);
+}
+
+/* ------------------------------------------------------------ 环境光背景 */
+body.theme-dark .app-container,
+body.theme-light .app-container {
+  background: transparent;
+}
+
+body.theme-dark::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(920px 620px at 10% -12%, var(--pg-surface-soft), transparent 62%),
+    radial-gradient(760px 540px at 96% 4%, var(--pg-surface), transparent 64%),
+    radial-gradient(880px 640px at 62% 112%, var(--pg-surface-soft), transparent 66%),
+    linear-gradient(180deg, var(--pg-canvas) 0%, #010605 100%);
+}
+
+body.theme-light::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 620px at 12% -10%, var(--pg-surface-soft), transparent 62%),
+    radial-gradient(760px 520px at 94% 0%, rgba(200, 220, 232, 0.35), transparent 64%),
+    linear-gradient(180deg, #F6FAF8 0%, #EAF3EF 100%);
+}
+
+body.pg-no-ambient::before {
+  display: none;
+}
+
+/* -------------------------------------------------------------- 工作区玻璃 */
+body.theme-dark .workspace-leaf-content,
+body.theme-dark .workspace-split.mod-left-split .workspace-leaf-content,
+body.theme-dark .workspace-split.mod-right-split .workspace-leaf-content,
+body.theme-light .workspace-leaf-content {
+  background: var(--pg-surface-strong);
+  -webkit-backdrop-filter: blur(var(--pg-blur-size)) saturate(140%);
+  backdrop-filter: blur(var(--pg-blur-size)) saturate(140%);
+  border: 1px solid var(--pg-border);
+  border-radius: var(--pg-radius-panel);
+  box-shadow: inset 0 1px 0 var(--pg-highlight), var(--pg-shadow-soft);
+}
+
+body.theme-dark .workspace-split.mod-left-split .workspace-leaf-content,
+body.theme-dark .workspace-split.mod-right-split .workspace-leaf-content {
+  background: var(--pg-surface);
+}
+
+body.pg-solid .workspace-leaf-content,
+body.pg-solid .glass-dashboard .callout {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+body.theme-dark .workspace-tab-header-container,
+body.theme-dark .workspace-tab-header-container-inner {
+  background: transparent;
+  border-bottom: 1px solid var(--pg-border);
+}
+
+body.theme-dark .workspace-tab-header {
+  border-radius: var(--pg-radius-control) var(--pg-radius-control) 0 0;
+  color: var(--pg-text-muted);
+}
+
+body.theme-dark .workspace-tab-header.is-active {
+  background: linear-gradient(180deg, var(--pg-surface-soft), transparent);
+  box-shadow: inset 0 1px 0 var(--pg-highlight);
+  color: var(--pg-text);
+}
+
+body.theme-dark .view-header {
+  background: transparent;
+  border-bottom: 1px solid var(--pg-border);
+}
+
+body.theme-dark .status-bar {
+  background: var(--pg-surface-strong);
+  -webkit-backdrop-filter: blur(calc(var(--pg-blur-size) * 0.7));
+  backdrop-filter: blur(calc(var(--pg-blur-size) * 0.7));
+  border-top: 1px solid var(--pg-border);
+  color: var(--pg-text-muted);
+}
+
+body.theme-dark .workspace-ribbon,
+body.theme-dark .workspace-ribbon.mod-left {
+  background: transparent;
+  border-right: 1px solid var(--pg-border);
+}
+
+body.theme-dark .nav-header,
+body.theme-dark .nav-files-container {
+  background: transparent;
+}
+
+body.theme-dark .nav-file-title,
+body.theme-dark .nav-folder-title {
+  border-radius: 10px;
+}
+
+body.theme-dark .nav-file-title:hover,
+body.theme-dark .nav-folder-title:hover {
+  background: var(--pg-surface-soft);
+}
+
+body.theme-dark input[type="text"],
+body.theme-dark input[type="search"],
+body.theme-dark .search-input-container input {
+  background: var(--pg-surface-strong);
+  border: 1px solid var(--pg-border);
+  border-radius: var(--pg-radius-control);
+}
+
+body.theme-dark .search-input-container input:focus {
+  border-color: var(--pg-border-strong);
+  box-shadow: 0 0 0 2px var(--pg-surface-soft);
+}
+
+body.theme-dark .clickable-icon:hover {
+  background: var(--pg-surface-soft);
+  border-radius: 8px;
+}
+
+/* 编辑器正文可读性优先 */
+body.theme-dark .markdown-source-view.mod-cm6 .cm-scroller,
+body.theme-dark .markdown-preview-view {
+  background: transparent;
+}
+
+body.theme-dark .markdown-preview-sizer,
+body.theme-dark .cm-sizer {
+  padding-bottom: 48px;
+}
+
+/* --------------------------------------------------------------- 工作台首页 */
+.glass-dashboard {
+  --pg-card-bg: var(--pg-surface);
+  --pg-card-bg-hover: var(--pg-surface-strong);
+}
+
+/* 提高优先级：压过 Obsidian 自带「可读行宽」的 max-width 规则 */
+body .markdown-preview-view.glass-dashboard .markdown-preview-sizer,
+body .glass-dashboard .cm-sizer {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.glass-dashboard h1 {
+  font-size: 27px;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.4em;
+}
+
+.glass-dashboard h2 {
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--pg-text-muted);
+  border-bottom: 1px solid var(--pg-border);
+  padding-bottom: 8px;
+  margin-top: 30px;
+}
+
+.glass-dashboard h2::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 14px;
+  margin-right: 8px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--pg-c5), var(--pg-accent));
+  vertical-align: -1px;
+}
+
+/* callout → 玻璃卡片 */
+.glass-dashboard .callout {
+  --callout-color: 255, 255, 255;
+  --callout-border-width: 1px;
+  --callout-border-opacity: 1;
+  --callout-radius: var(--pg-radius-card);
+  background: linear-gradient(180deg, var(--pg-surface-soft), transparent 42%), var(--pg-card-bg);
+  border: 1px solid var(--pg-border);
+  border-radius: var(--pg-radius-card);
+  box-shadow: inset 0 1px 0 var(--pg-highlight), var(--pg-shadow);
+  -webkit-backdrop-filter: blur(calc(var(--pg-blur-size) * 0.9)) saturate(130%);
+  backdrop-filter: blur(calc(var(--pg-blur-size) * 0.9)) saturate(130%);
+  padding: 16px 20px;
+  margin: 16px 0;
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.glass-dashboard .callout:hover {
+  border-color: var(--pg-border-strong);
+}
+
+.glass-dashboard .callout-title {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.glass-dashboard .callout-title-inner {
+  color: var(--pg-text);
+}
+
+.glass-dashboard .callout-icon .svg-icon {
+  color: var(--pg-accent);
+}
+
+.glass-dashboard .callout-content > :first-child {
+  margin-top: 0.35em;
+}
+
+.glass-dashboard .callout-content > :last-child {
+  margin-bottom: 0;
+}
+
+/* 快捷入口：列表 → 自适应网格 chips */
+.glass-dashboard .callout[data-callout="links"] .callout-content ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 0.4em 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.glass-dashboard .callout[data-callout="links"] .callout-content li {
+  margin: 0;
+  padding: 0;
+}
+
+.glass-dashboard .callout[data-callout="links"] .callout-content li > a.internal-link {
+  display: block;
+  padding: 11px 14px;
+  border-radius: 14px;
+  background: var(--pg-surface-soft);
+  border: 1px solid var(--pg-border);
+  color: var(--pg-text);
+  text-decoration: none;
+  font-weight: 550;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.glass-dashboard .callout[data-callout="links"] .callout-content li > a.internal-link:hover {
+  transform: translateY(-1px);
+  border-color: var(--pg-border-strong);
+  background: var(--pg-surface-soft);
+}
+
+/* 表格 */
+.glass-dashboard table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid var(--pg-border);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--pg-surface-soft);
+}
+
+.glass-dashboard thead th {
+  background: var(--pg-surface-soft);
+  color: var(--pg-text-muted);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.glass-dashboard th,
+.glass-dashboard td {
+  border-color: var(--pg-border) !important;
+  padding: 8px 12px;
+}
+
+.glass-dashboard tbody tr:hover {
+  background: var(--pg-surface-soft);
+}
+
+/* Dataview / 任务列表 */
+.glass-dashboard .dataview.list-view-ul li,
+.glass-dashboard ul.contains-task-list li {
+  padding: 3px 0;
+}
+
+.glass-dashboard .task-list-item-checkbox {
+  border-radius: 6px;
+}
+
+.glass-dashboard .callout .block-language-dataview > .table-view-table,
+.glass-dashboard .callout .block-language-dataviewjs > .table-view-table {
+  margin-top: 0.4em;
+}
+
+/* 热力图自适应 */
+.glass-dashboard .heatmap-codeblock {
+  width: 100%;
+  overflow-x: auto;
+  padding: 6px 2px;
+}
+
+/* 链接 */
+.glass-dashboard a.internal-link {
+  text-decoration-color: var(--pg-border-strong);
+  text-underline-offset: 3px;
+}
+
+/* ---------------------------------------------------- 双栏工作台（阅读视图） */
+body.pg-2col .glass-dashboard .markdown-preview-sizer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+body.pg-2col .glass-dashboard .markdown-preview-sizer > * {
+  grid-column: 1 / -1;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+body.pg-2col .glass-dashboard .markdown-preview-sizer > .callout,
+body.pg-2col .glass-dashboard .markdown-preview-sizer > *:has(> .callout) {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* Obsidian 1.13+ 阅读视图会把块包在 div.el-* 里，这里保证 callout 能成为网格项 */
+body.pg-2col .glass-dashboard .markdown-preview-sizer > .el-blockquote:has(> .callout) {
+  min-width: 0;
+}
+
+/* 直接子节点是 .callout 时 */
+body.pg-2col .glass-dashboard .markdown-preview-sizer > .callout:is(
+  [data-callout="summary"],
+  [data-callout="links"],
+  [data-callout="heatmap"],
+  [data-callout="nav"],
+  [data-callout="tip"]
+) {
+  grid-column: 1 / -1;
+}
+
+/* 被 div.el-* 包裹时（Obsidian 1.13+ 阅读视图） */
+body.pg-2col .glass-dashboard .markdown-preview-sizer > *:has(> .callout:is(
+  [data-callout="summary"],
+  [data-callout="links"],
+  [data-callout="heatmap"],
+  [data-callout="nav"],
+  [data-callout="tip"]
+)) {
+  grid-column: 1 / -1;
+}
+
+body.pg-2col .glass-dashboard .callout {
+  margin: 0;
+}
+
+body.pg-2col .glass-dashboard .markdown-preview-sizer > h2,
+body.pg-2col .glass-dashboard .markdown-preview-sizer > h1 {
+  margin-top: 18px;
+}
+
+/* --------------------------------------------------------------- 响应式 */
+@media (max-width: 980px) {
+  body.pg-2col .glass-dashboard .markdown-preview-sizer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  body.theme-dark .workspace-leaf-content {
+    border-radius: 14px;
+    -webkit-backdrop-filter: blur(calc(var(--pg-blur-size) * 0.6));
+    backdrop-filter: blur(calc(var(--pg-blur-size) * 0.6));
+  }
+
+  .glass-dashboard .callout {
+    padding: 13px 15px;
+    border-radius: 20px;
+    -webkit-backdrop-filter: blur(calc(var(--pg-blur-size) * 0.5));
+    backdrop-filter: blur(calc(var(--pg-blur-size) * 0.5));
+  }
+
+  .glass-dashboard .callout[data-callout="links"] .callout-content ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-dashboard .callout,
+  .glass-dashboard .callout[data-callout="links"] .callout-content li > a.internal-link {
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------- 滚动条 */
+body.theme-dark ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+body.theme-dark ::-webkit-scrollbar-thumb {
+  background: var(--pg-border);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+body.theme-dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--pg-border-strong);
+  background-clip: content-box;
+}
+
+/* ---------------------------------------------------------- 交互工作台 */
+.glass-dashboard .wb-dash {
+  margin-top: 6px;
+}
+
+.glass-dashboard .wb-hero {
+  position: relative;
+  height: 168px;
+  margin: 8px 0 16px;
+  overflow: hidden;
+  border: 1px solid var(--pg-border);
+  border-radius: 22px;
+  box-shadow: var(--pg-shadow-soft);
+  background:
+    radial-gradient(420px circle at var(--hx, 30%) var(--hy, 35%), var(--pg-surface-soft), transparent 66%),
+    conic-gradient(from 0deg at 30% 40%, transparent 0deg, var(--pg-surface-soft) 90deg, transparent 180deg, var(--pg-surface-soft) 270deg, transparent 360deg),
+    linear-gradient(120deg, var(--pg-surface-strong), var(--pg-surface));
+  background-size: 100% 100%, 200% 200%, 100% 100%;
+  animation: wb-aurora 18s ease-in-out infinite alternate;
+}
+
+@keyframes wb-aurora {
+  0% { background-position: 0% 50%, 0% 0%, 0 0; }
+  100% { background-position: 0% 50%, 100% 100%, 0 0; }
+}
+
+.glass-dashboard .wb-hero-title {
+  position: absolute;
+  left: 18px;
+  bottom: 32px;
+  pointer-events: none;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--pg-text);
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.55);
+}
+
+.glass-dashboard .wb-hero-sub {
+  position: absolute;
+  left: 18px;
+  bottom: 14px;
+  pointer-events: none;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--pg-text-muted);
+}
+
+.glass-dashboard .wb-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 12px;
+}
+
+.glass-dashboard .wb-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 14px 16px;
+  border: 1px solid var(--pg-border);
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--pg-highlight), transparent 62%), var(--pg-surface);
+  box-shadow: var(--pg-shadow-soft);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.glass-dashboard .wb-card:hover,
+.glass-dashboard .wb-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--pg-border-strong);
+  box-shadow: var(--pg-shadow);
+  outline: none;
+}
+
+.glass-dashboard .wb-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  background: radial-gradient(190px circle at var(--mx, 50%) var(--my, 50%), var(--pg-surface-soft), transparent 66%);
+}
+
+.glass-dashboard .wb-card:hover::before {
+  opacity: 1;
+}
+
+.glass-dashboard .wb-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--pg-text-muted);
+  text-transform: uppercase;
+}
+
+.glass-dashboard .wb-value {
+  margin-top: 2px;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--pg-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.glass-dashboard .wb-sub {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--pg-accent);
+}
+
+.glass-dashboard .wb-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0 8px;
+}
+
+.glass-dashboard .wb-chip {
+  appearance: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--pg-text-muted);
+  background: transparent;
+  border: 1px solid var(--pg-border);
+  border-radius: 999px;
+  transition: color 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.glass-dashboard .wb-chip:hover {
+  color: var(--pg-text);
+  border-color: var(--pg-border-strong);
+}
+
+.glass-dashboard .wb-chip.is-active {
+  color: var(--pg-text);
+  background: var(--pg-surface-soft);
+  border-color: var(--pg-border-strong);
+}
+
+.glass-dashboard .wb-search {
+  flex: 1 1 200px;
+  min-width: 160px;
+  padding: 7px 14px;
+  font-size: 13px;
+  color: var(--pg-text);
+  background: var(--pg-surface-strong);
+  border: 1px solid var(--pg-border);
+  border-radius: 999px;
+  outline: none;
+}
+
+.glass-dashboard .wb-search:focus {
+  border-color: var(--pg-border-strong);
+}
+
+.glass-dashboard .wb-search::placeholder {
+  color: var(--pg-text-faint);
+}
+
+.glass-dashboard .wb-list-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 18px 0 6px;
+  padding-bottom: 6px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--pg-text-muted);
+  border-bottom: 1px solid var(--pg-border);
+}
+
+.glass-dashboard .wb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.glass-dashboard .wb-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.glass-dashboard .wb-row:hover {
+  background: var(--pg-surface-soft);
+  border-color: var(--pg-border);
+}
+
+.glass-dashboard .wb-row-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--pg-text);
+}
+
+.glass-dashboard .wb-row-folder {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: var(--pg-text-faint);
+}
+
+.glass-dashboard .wb-row-date {
+  font-size: 11px;
+  color: var(--pg-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.glass-dashboard .wb-empty {
+  padding: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--pg-text-faint);
+}
+
+@media (max-width: 760px) {
+  .glass-dashboard .wb-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .glass-dashboard .wb-row-folder {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------- 炫彩模式 */
+body.pg-vivid::before {
+  background:
+    radial-gradient(900px 600px at 8% -10%, color-mix(in srgb, var(--pg-c3) 16%, transparent), transparent 62%),
+    radial-gradient(760px 520px at 92% 0%, color-mix(in srgb, var(--pg-c4) 14%, transparent), transparent 64%),
+    radial-gradient(820px 580px at 55% 110%, color-mix(in srgb, var(--pg-c5) 12%, transparent), transparent 66%),
+    linear-gradient(180deg, var(--pg-canvas) 0%, #010605 100%);
+}
+
+body.pg-vivid .glass-dashboard h2::before {
+  background: var(--pg-gradient);
+}
+
+body.pg-vivid .glass-dashboard .wb-value {
+  background: var(--pg-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+body.pg-vivid .glass-dashboard .wb-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--pg-gradient);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+body.pg-vivid .glass-dashboard .wb-chip.is-active {
+  color: #071018;
+  background: var(--pg-gradient);
+  border-color: transparent;
+}
+
+body.pg-vivid .glass-dashboard .wb-hero::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  z-index: 0;
+  pointer-events: none;
+  background: conic-gradient(from 0deg, var(--pg-c3), var(--pg-c4), var(--pg-c5), var(--pg-c3));
+  filter: blur(56px) saturate(150%);
+  opacity: 0.46;
+  animation: wb-vivid-spin 20s linear infinite;
+}
+
+body.pg-vivid .glass-dashboard .wb-hero-title,
+body.pg-vivid .glass-dashboard .wb-hero-sub {
+  z-index: 2;
+}
+
+@keyframes wb-vivid-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------------------------------------------------------- 关闭配色开关 */
+/* 开启「关闭配色（跟随主题）」后，所有 --pg-* 直接引用主题变量：
+   不再有青绿/蓝金染色，但玻璃、圆角、边框、双栏等结构保持不变。 */
+body.pg-no-color {
+  --pg-surface: var(--background-secondary);
+  --pg-surface-strong: var(--background-primary);
+  --pg-surface-soft: var(--background-modifier-hover);
+  --pg-border: var(--background-modifier-border);
+  --pg-border-strong: var(--interactive-accent);
+  --pg-highlight: transparent;
+
+  --pg-text: var(--text-normal);
+  --pg-text-muted: var(--text-muted);
+  --pg-text-faint: var(--text-faint);
+
+  --pg-accent: var(--interactive-accent);
+  --pg-accent-hover: var(--interactive-accent-hover);
+  --pg-c3: var(--interactive-accent);
+  --pg-c4: var(--text-muted);
+  --pg-c5: var(--text-normal);
+
+  --pg-canvas: var(--background-primary);
+  --pg-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+  --pg-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.20);
+
+  --pg-card-bg: var(--background-secondary);
+  --pg-gradient: linear-gradient(120deg, var(--pg-accent), var(--pg-c4));
+}
+
+/* 关闭配色时不渲染环境光晕，避免主题色被覆盖 */
+body.pg-no-color::before {
+  display: none;
+}
